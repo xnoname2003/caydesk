@@ -6,7 +6,7 @@ use Filament\Pages\Page;
 use App\Models\Ticket;
 use Illuminate\Contracts\Support\Htmlable;
 use App\Filament\Pages\Tickets\Actions\AssignAgentAction;
-use App\Filament\Pages\Tickets\Actions\ManageTagsAction;
+use App\Filament\Pages\Tickets\Actions\ManageLabelsAction;
 use App\Filament\Pages\Tickets\Actions\DeleteTicketAction;
 use App\Filament\Pages\Tickets\Actions\UpdateStatusAction;
 use App\Filament\Pages\Tickets\Actions\UpdatePriorityAction;
@@ -37,7 +37,10 @@ class TicketDetail extends Page
             'priority',
             'comments.user',
             'comments.attachments',
-            'attachments'
+            'comments.activitiesAsSubject.causer',
+            'attachments',
+            'activitiesAsSubject.causer'
+            
         ])
             ->where('ticket_number', $ticket_number)
             ->firstOrFail();
@@ -52,9 +55,9 @@ class TicketDetail extends Page
     {
         return AssignAgentAction::make($this->ticket);
     }
-    public function manageTagsAction(): Action
+    public function manageLabelsAction(): Action
     {
-        return ManageTagsAction::make($this->ticket);
+        return ManageLabelsAction::make($this->ticket);
     }
     public function deleteTicketAction(): Action
     {

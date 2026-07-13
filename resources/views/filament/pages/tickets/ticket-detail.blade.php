@@ -216,6 +216,77 @@
                 </form>
             </div>
 
+            <div
+                class="mt-6 bg-white rounded-xl shadow-sm border border-slate-200 p-5 dark:bg-gray-900 dark:border-white/10">
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                    <x-heroicon-m-clock class="w-5 h-5 text-slate-400" />
+                    Ticket History
+                </h3>
+
+                <div class="relative border-l border-slate-200 dark:border-gray-700 ml-3 space-y-6 pb-4">
+                    @php
+                        $allActivities = $ticket->activitiesAsSubject
+                            ->concat($ticket->comments->flatMap->activitiesAsSubject)
+                            ->sortByDesc('created_at');
+                    @endphp
+
+                    @forelse ($allActivities as $activity)
+                        <div class="relative pl-6">
+                            <span
+                                class="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-gray-600 ring-4 ring-white dark:ring-gray-900"></span>
+
+                            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-1 mb-1">
+                                <p class="text-sm font-semibold text-slate-900 dark:text-white">
+                                    {{ $activity->causer ? $activity->causer->name : 'System' }}
+                                </p>
+                                <span class="text-xs font-medium text-slate-500">
+                                    {{ $activity->created_at->format('d M, Y H:i') }}
+                                </span>
+                            </div>
+
+                            <p class="text-sm text-slate-600 dark:text-gray-400">
+                                {{ $activity->description }}
+                            </p>
+                            @if ($activity->description === 'Labels have been updated')
+                                <div
+                                    class="mt-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg p-3 text-xs border border-indigo-100 dark:border-indigo-800">
+                                    <div class="flex items-center gap-2">
+                                        <x-heroicon-m-tag class="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+                                        <span class="text-indigo-700 dark:text-indigo-300 font-medium">
+                                            Labels have been updated.
+                                        </span>
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if ($activity->attribute_changes && count($activity->attribute_changes) > 0 && !auth()->user()->hasRole('customer'))
+                                <div
+                                    class="mt-2 bg-slate-50 dark:bg-gray-800 rounded-lg p-3 text-xs border border-slate-100 dark:border-gray-700">
+                                    @if (isset($activity->attribute_changes['old']))
+                                        @foreach ($activity->attribute_changes['attributes'] as $key => $newValue)
+                                            @if (isset($activity->attribute_changes['old'][$key]) && $activity->attribute_changes['old'][$key] !== $newValue)
+                                                <div
+                                                    class="grid grid-cols-3 gap-2 py-1 border-b border-slate-200 dark:border-gray-700 last:border-0 last:pb-0">
+                                                    <span
+                                                        class="font-medium text-slate-500 capitalize">{{ str_replace('_id', '', $key) }}</span>
+                                                    <span
+                                                        class="text-red-500 line-through">{{ $activity->attribute_changes['old'][$key] }}</span>
+                                                    <span class="text-emerald-600 font-medium">&rarr;
+                                                        {{ $newValue }}</span>
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    @else
+                                        <span class="text-slate-500 italic">Record created.</span>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+                    @empty
+                        <p class="text-sm text-slate-500 pl-6 italic">No activity recorded yet.</p>
+                    @endforelse
+                </div>
+            </div>
 
         </div>
 
@@ -290,10 +361,7 @@
 
                                 $user = auth()->user();
                                 $isAgent = $user->hasRole('agent');
-                                $isAdminOrSpv = $user->hasAnyRole([
-                                    'administrator',
-                                    'supervisor',
-                                ]);
+                                $isAdminOrSpv = $user->hasAnyRole(['administrator', 'supervisor']);
 
                                 if ($isAgent) {
                                     if ($ticket->assigned_agent_id === $user->id) {
@@ -390,9 +458,9 @@
             <div
                 class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden p-5 dark:bg-gray-900 dark:border-white/10">
                 <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Tags</h3>
+                    <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Labels</h3>
                     @if (auth()->user()->hasAnyRole(['administrator', 'supervisor']))
-                        {{ $this->manageTagsAction }}
+                        {{ $this->manageLabelsAction }}
                     @endif
                 </div>
 
@@ -403,7 +471,7 @@
                             {{ $label->name }}
                         </span>
                     @empty
-                        <span class="text-xs text-slate-400 italic">No tags</span>
+                        <span class="text-xs text-slate-400 italic">No Labels</span>
                     @endforelse
                 </div>
             </div>

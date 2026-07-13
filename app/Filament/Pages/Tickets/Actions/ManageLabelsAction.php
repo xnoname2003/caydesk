@@ -3,15 +3,15 @@
 namespace App\Filament\Pages\Tickets\Actions;
 
 use App\Models\Ticket;
-use App\Models\Label; // Pastikan model Label sudah dibuat
+use App\Models\Label;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 
-class ManageTagsAction
+class ManageLabelsAction
 {
     public static function make(Ticket $ticket): Action
     {
-        return Action::make('manageTags')
+        return Action::make('manageLabels')
             ->label('') 
             ->icon('heroicon-m-pencil-square')
             ->color('gray')
@@ -26,7 +26,12 @@ class ManageTagsAction
             ->action(function (array $data) use ($ticket) {
                 $ticket->labels()->sync($data['labels'] ?? []);
                 $ticket->load('labels');
+                activity()
+                ->performedOn($ticket)
+                ->causedBy(auth()->user())
+                ->event('updated')
+                ->log('Labels have been updated');
             })
-            ->successNotificationTitle('Tags updated successfully!');;
+            ->successNotificationTitle('Labels updated successfully!');;
     }
 }
