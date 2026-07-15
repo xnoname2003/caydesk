@@ -27,6 +27,8 @@ class TicketDetail extends Page
 
     public ?array $replyData = ['is_internal' => 0];
 
+    public int $formKey = 1;
+
     public function mount($ticket_number)
     {
 
@@ -92,6 +94,8 @@ class TicketDetail extends Page
             'content' => null,
             'file_attachments' => []
         ];
+
+        $this->formKey++;
     }
 
     public function closeTicketAction(): Action

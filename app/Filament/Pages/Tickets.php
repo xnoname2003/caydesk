@@ -48,17 +48,24 @@ class Tickets extends Page implements HasTable
             ->query(function () {
                 $query = Ticket::query()->with(['priority', 'category', 'creator', 'assignedAgent']);
                 $user = auth()->user();
+
                 if ($user->hasRole('agent')) {
-                    $query->where('assigned_agent_id', $user->id);
+                    $query->where(function ($q) use ($user) {
+                        $q->where('assigned_agent_id', $user->id)
+                            ->orWhere('created_by', $user->id);
+                    });
                 } elseif ($user->hasRole('customer')) {
                     $query->where('created_by', $user->id);
                 } elseif (!$user->hasAnyRole(['administrator', 'supervisor'])) {
                     $query->whereRaw('1 = 0');
                 }
+
                 if ($this->activeTab === 'active') {
                     $query->whereNotIn('status', [TicketStatusService::STATUS_RESOLVED, TicketStatusService::STATUS_CLOSED]);
-                } elseif ($this->activeTab === 'my_tickets') {
+                } elseif ($this->activeTab === 'assigned_to_me' || $this->activeTab === 'my_tickets') {
                     $query->where('assigned_agent_id', $user->id);
+                } elseif ($this->activeTab === 'created_by_me') {
+                    $query->where('created_by', $user->id);
                 } elseif ($this->activeTab === 'escalated') {
                     $query->where('status', TicketStatusService::STATUS_ESCALATED);
                 } elseif ($this->activeTab === 'resolved') {
@@ -66,6 +73,7 @@ class Tickets extends Page implements HasTable
                 } elseif ($this->activeTab === 'overdue') {
                     $query->where('due_at', '<', now())->whereNotIn('status', [TicketStatusService::STATUS_RESOLVED, TicketStatusService::STATUS_CLOSED]);
                 }
+
                 return $query;
             })
             ->defaultPaginationPageOption(10)

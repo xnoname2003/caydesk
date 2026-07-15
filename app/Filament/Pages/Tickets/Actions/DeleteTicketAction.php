@@ -20,6 +20,7 @@ class DeleteTicketAction
             ->action(function () use ($ticket) {
                 $ticket->delete();
                 return Redirect::to('/app/tickets'); 
-            });
+            })
+            ->successNotificationTitle('Ticket deleted successfully!');
     }
 }

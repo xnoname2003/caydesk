@@ -12,10 +12,10 @@ class ManageLabelsAction
     public static function make(Ticket $ticket): Action
     {
         return Action::make('manageLabels')
-            ->label('') 
+            ->label('')
             ->icon('heroicon-m-pencil-square')
             ->color('gray')
-            ->visible(fn () => auth()->user()->hasAnyRole(['administrator', 'supervisor']))
+            ->visible(fn() => auth()->user()->hasAnyRole(['administrator', 'supervisor']))
             ->form([
                 Select::make('labels')
                     ->multiple()
@@ -24,14 +24,23 @@ class ManageLabelsAction
                     ->preload()
             ])
             ->action(function (array $data) use ($ticket) {
-                $ticket->labels()->sync($data['labels'] ?? []);
-                $ticket->load('labels');
-                activity()
-                ->performedOn($ticket)
-                ->causedBy(auth()->user())
-                ->event('updated')
-                ->log('Labels have been updated');
+                $oldLabels = $ticket->labels->pluck('name')->toArray();
+                $ticket->labels()->sync($data['labels']);
+                $newLabels = $ticket->fresh()->labels->pluck('name')->toArray();
+
+                $log = activity()
+                    ->performedOn($ticket)
+                    ->causedBy(auth()->user())
+                    ->event('updated')
+                    ->log('Labels have been updated');
+
+                $log->attribute_changes = [
+                    'old' => ['labels' => $oldLabels],
+                    'attributes' => ['labels' => $newLabels],
+                ];
+                $log->save();
             })
-            ->successNotificationTitle('Labels updated successfully!');;
+            ->successNotificationTitle('Labels updated successfully!');
+        ;
     }
 }

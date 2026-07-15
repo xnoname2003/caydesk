@@ -21,7 +21,7 @@ class CreateTicketAction
                 $data['created_by'] = auth()->id();
                 $data['status'] = TicketStatusService::STATUS_OPEN;
                 $datePrefix = now()->format('ymd');
-                $latestTicket = Ticket::whereDate('created_at', today())->count() + 1;
+                $latestTicket = Ticket::withTrashed()->whereDate('created_at', today())->count() + 1;
                 $data['ticket_number'] = 'TCK-' . $datePrefix . '-' . str_pad($latestTicket, 6, '0', STR_PAD_LEFT);
                 $priority = Priority::with('slaRule')->find($data['priority_id']);
                 if ($priority && $priority->slaRule) {

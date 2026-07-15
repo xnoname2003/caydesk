@@ -9,15 +9,22 @@
             Active
         </x-filament::tabs.item>
 
+        @if (!auth()->user()->hasRole('customer'))
+            <x-filament::tabs.item wire:click="$set('activeTab', 'assigned_to_me')" :active="in_array($activeTab, ['assigned_to_me', 'my_tickets'])"
+                icon="heroicon-m-user">
+                Assigned to Me
+            </x-filament::tabs.item>
+
+            <x-filament::tabs.item wire:click="$set('activeTab', 'created_by_me')" :active="$activeTab === 'created_by_me'"
+                icon="heroicon-m-pencil-square">
+                Created by Me
+            </x-filament::tabs.item>
+        @endif
+
         @if (auth()->user()->hasAnyRole(['administrator', 'supervisor']))
             <x-filament::tabs.item wire:click="$set('activeTab', 'escalated')" :active="$activeTab === 'escalated'"
                 icon="heroicon-m-exclamation-triangle" badge-color="warning">
                 Escalated
-            </x-filament::tabs.item>
-
-            <x-filament::tabs.item wire:click="$set('activeTab', 'my_tickets')" :active="$activeTab === 'my_tickets'"
-                icon="heroicon-m-user">
-                Assigned to Me
             </x-filament::tabs.item>
         @endif
 
