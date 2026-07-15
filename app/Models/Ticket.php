@@ -101,8 +101,7 @@ class Ticket extends Model
             ->logOnly([
                 'status', 
                 'priority.name',
-                'category.name', 
-                'labels',
+                'category.name',
                 'assignedAgent.name'
             ])
             ->logOnlyDirty()

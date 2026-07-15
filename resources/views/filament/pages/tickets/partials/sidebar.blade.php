@@ -4,8 +4,8 @@
             <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Ticket Properties</h3>
         </div>
 
-        <div class="p-5 space-y-5" wire:poll.3s.visible>
-            <div>
+        <div class="p-5 space-y-5">
+            <div wire:poll.3s.visible>
                 <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Due Date (SLA)</label>
                 <div class="px-3 py-2 text-sm border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 font-medium flex items-center justify-between">
                     <span>{{ $ticket->due_at ? \Carbon\Carbon::parse($ticket->due_at)->format('d M, Y H:i') : '-' }}</span>
@@ -16,7 +16,7 @@
             </div>
 
             @if (!auth()->user()->hasRole('customer'))
-                <div>
+                <div wire:poll.3s.visible>
                     <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Response Target (SLA)</label>
                     <div class="px-3 py-2 text-sm border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 font-medium">
                         @if ($ticket->first_responded_at)
@@ -40,7 +40,7 @@
             <div>
                 <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Status</label>
                 <div class="flex items-center justify-between px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                    <span class="text-sm text-slate-700 dark:text-slate-300 font-medium">
+                    <span class="text-sm text-slate-700 dark:text-slate-300 font-medium" wire:poll.3s.visible>
                         {{ $ticket->status }}
                     </span>
                     @php
@@ -80,7 +80,7 @@
             <div>
                 <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Priority</label>
                 <div class="flex items-center justify-between px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                    <span class="text-sm text-slate-700 dark:text-slate-300 font-medium">
+                    <span class="text-sm text-slate-700 dark:text-slate-300 font-medium" wire:poll.3s.visible>
                         {{ $ticket->priority->name ?? '-' }}
                     </span>
                     @if (auth()->user()->hasAnyRole(['administrator', 'supervisor']))
@@ -92,7 +92,7 @@
             <div>
                 <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1.5">Assignee</label>
                 <div class="flex items-center justify-between px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                    <span class="text-sm text-slate-700 dark:text-slate-300 font-medium">
+                    <span class="text-sm text-slate-700 dark:text-slate-300 font-medium" wire:poll.3s.visible>
                         {{ $ticket->assignedAgent->name ?? 'Unassigned' }}
                     </span>
                     @if (auth()->user()->hasAnyRole(['administrator', 'supervisor']))

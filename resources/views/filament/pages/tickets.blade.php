@@ -1,4 +1,4 @@
-<x-filament-panels::page>
+<x-filament-panels::page wire:poll.3s.visible>
     <x-filament::tabs class="mb-4">
 
         <x-filament::tabs.item wire:click="$set('activeTab', 'all')" :active="$activeTab === 'all'" icon="heroicon-m-list-bullet">

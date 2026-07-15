@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 class Attachment extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, LogsActivity;
 
     protected $fillable = [
         'attachable_type',
@@ -21,7 +23,6 @@ class Attachment extends Model
         'size',
     ];
 
-    // Menghubungkan kembali ke Ticket atau Comment
     public function attachable()
     {
         return $this->morphTo();
@@ -30,5 +31,20 @@ class Attachment extends Model
     public function uploader()
     {
         return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['original_name', 'mime_type', 'size'])
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges()
+            ->setDescriptionForEvent(function (string $eventName) {
+                if ($eventName === 'created') {
+                    return 'Attachment uploaded';
+                }
+
+                return "Attachment has been {$eventName}";
+            });
     }
 }

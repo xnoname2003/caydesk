@@ -76,6 +76,7 @@ class Tickets extends Page implements HasTable
 
                 return $query;
             })
+            ->poll('3s')
             ->defaultPaginationPageOption(10)
             ->defaultSort('created_at', 'desc')
             ->columns(TicketTableSchema::columns())

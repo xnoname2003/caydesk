@@ -5,18 +5,25 @@
     </h3>
     <div class="relative border-l border-slate-200 dark:border-slate-700 ml-3 space-y-6 pb-4" wire:poll.3s.visible>
         @php
-            $allActivities = $ticket
-                ->activitiesAsSubject()
-                ->get()
-                ->concat($ticket->comments()->with('activitiesAsSubject')->get()->flatMap->activitiesAsSubject)
+            $ticketActivities = $ticket->activitiesAsSubject()->get();
+            $commentActivities = $ticket->comments()->with('activitiesAsSubject')->get()->flatMap->activitiesAsSubject;
+            $ticketAttachmentActivities = $ticket->attachments()->with('activitiesAsSubject')->get()->flatMap
+                ->activitiesAsSubject;
+            $commentAttachmentActivities = $ticket->comments()->with('attachments.activitiesAsSubject')->get()->flatMap
+                ->attachments->flatMap->activitiesAsSubject;
+
+            $allActivities = $ticketActivities
+                ->concat($commentActivities)
+                ->concat($ticketAttachmentActivities)
+                ->concat($commentAttachmentActivities)
                 ->sortByDesc('created_at');
         @endphp
-
         @forelse ($allActivities as $activity)
             @php
                 $isInternalLog = false;
+                $subjType = $activity->subject_type ?? '';
 
-                if (str_ends_with($activity->subject_type ?? '', 'Comment')) {
+                if (str_ends_with($subjType, 'Comment')) {
                     if ($activity->subject && $activity->subject->is_internal) {
                         $isInternalLog = true;
                     } else {
@@ -26,10 +33,17 @@
                             $isInternalLog = true;
                         }
                     }
+                } elseif (str_ends_with($subjType, 'Attachment')) {
+                    if ($activity->subject && str_ends_with($activity->subject->attachable_type ?? '', 'Comment')) {
+                        $commentParent = $activity->subject->attachable;
+                        if ($commentParent && $commentParent->is_internal) {
+                            $isInternalLog = true;
+                        }
+                    }
                 }
             @endphp
 
-            @if (! ($isInternalLog && auth()->user()->hasRole('customer')))
+            @if (!($isInternalLog && auth()->user()->hasRole('customer')))
                 @php
                     $changes = $activity->attribute_changes ?? [];
                     $attributes = $changes['attributes'] ?? [];
@@ -113,6 +127,8 @@
                                         <span class="text-red-500 dark:text-red-400 line-through truncate">
                                             @if ($key === 'is_internal')
                                                 {{ isset($oldValues[$key]) ? ($oldValues[$key] ? 'True' : 'False') : '-' }}
+                                            @elseif ($key === 'size' && isset($oldValues[$key]))
+                                                {{ \Illuminate\Support\Number::fileSize((int) $oldValues[$key]) }}
                                             @else
                                                 {{ is_array($oldValues[$key] ?? null) ? json_encode($oldValues[$key]) : $oldValues[$key] ?? '-' }}
                                             @endif
@@ -124,6 +140,8 @@
                                             <span class="truncate">
                                                 @if ($key === 'is_internal')
                                                     {{ $newValue ? 'True' : 'False' }}
+                                                @elseif ($key === 'size')
+                                                    {{ \Illuminate\Support\Number::fileSize((int) $newValue) }}
                                                 @else
                                                     {{ is_array($newValue) ? json_encode($newValue) : $newValue }}
                                                 @endif
