@@ -80,31 +80,30 @@
                     @if ($isLabelUpdate && !auth()->user()->hasRole('customer'))
                         <div
                             class="mt-2 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-3 text-xs border border-indigo-100 dark:border-indigo-800/50">
-                            <div class="flex items-center gap-2 mb-2">
-                                <x-heroicon-m-tag class="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
-                                <span class="text-indigo-700 dark:text-indigo-300 font-medium">Label Changes</span>
-                            </div>
-                            <div
-                                class="grid grid-cols-[100px_1fr_1fr] gap-2 py-1 border-t border-indigo-100 dark:border-indigo-800/50 pt-2 items-center">
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-[140px_1fr_1fr] md:grid-cols-[160px_1fr_1fr] gap-1.5 sm:gap-2 py-2 sm:py-1 pt-2 items-start sm:items-center">
                                 <span class="font-medium text-indigo-500">Labels</span>
+                                
                                 <div class="flex flex-wrap gap-1">
                                     @php $oldLabels = is_array($oldValues['labels'] ?? null) ? $oldValues['labels'] : json_decode($oldValues['labels'] ?? '[]', true); @endphp
                                     @forelse(is_array($oldLabels) ? $oldLabels : [] as $oldLabel)
-                                        <span
-                                            class="text-red-500 dark:text-red-400 line-through bg-red-100 dark:bg-red-900/30 px-1.5 py-0.5 rounded">{{ $oldLabel['name'] ?? $oldLabel }}</span>
+                                        <span class="text-red-500 dark:text-red-400 line-through bg-red-100 dark:bg-red-900/30 px-1.5 py-0.5 rounded">{{ $oldLabel['name'] ?? $oldLabel }}</span>
                                     @empty
                                         <span class="text-slate-400 italic">None</span>
                                     @endforelse
                                 </div>
-                                <div class="flex flex-wrap gap-1 items-center">
-                                    <span class="text-emerald-600 dark:text-emerald-400 font-medium mr-1">&rarr;</span>
-                                    @php $newLabels = is_array($realChanges['labels'] ?? null) ? $realChanges['labels'] : json_decode($realChanges['labels'] ?? '[]', true); @endphp
-                                    @forelse(is_array($newLabels) ? $newLabels : [] as $newLabel)
-                                        <span
-                                            class="text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30 px-1.5 py-0.5 rounded">{{ $newLabel['name'] ?? $newLabel }}</span>
-                                    @empty
-                                        <span class="text-slate-400 italic">None</span>
-                                    @endforelse
+                                
+                                <div class="flex items-start sm:items-center gap-1.5 sm:gap-2">
+                                    <span class="text-emerald-600 dark:text-emerald-400 font-bold mt-0.5 sm:mt-0">&rarr;</span>
+                                    
+                                    <div class="flex flex-wrap gap-1">
+                                        @php $newLabels = is_array($realChanges['labels'] ?? null) ? $realChanges['labels'] : json_decode($realChanges['labels'] ?? '[]', true); @endphp
+                                        @forelse(is_array($newLabels) ? $newLabels : [] as $newLabel)
+                                            <span class="text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30 px-1.5 py-0.5 rounded">{{ $newLabel['name'] ?? $newLabel }}</span>
+                                        @empty
+                                            <span class="text-slate-400 italic">None</span>
+                                        @endforelse
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -116,15 +115,13 @@
                             class="mt-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 text-xs border border-slate-100 dark:border-slate-700/50">
                             @if (count($realChanges) > 0)
                                 @foreach ($realChanges as $key => $newValue)
-                                    <div
-                                        class="grid grid-cols-[140px_1fr_1fr] sm:grid-cols-[160px_1fr_1fr] gap-2 py-1 border-b border-slate-200 dark:border-slate-700 last:border-0 last:pb-0 items-center">
+                                    <div class="grid grid-cols-1 sm:grid-cols-[140px_1fr_1fr] md:grid-cols-[160px_1fr_1fr] gap-1.5 sm:gap-2 py-2 sm:py-1 border-b border-slate-200 dark:border-slate-700 last:border-0 last:pb-0 items-start sm:items-center">
 
-                                        <span
-                                            class="font-medium text-slate-500 dark:text-slate-400 capitalize wrap-break-word pr-2">
+                                        <span class="font-medium text-slate-500 dark:text-slate-400 capitalize break-words">
                                             {{ str_replace(['.', '_id', '_'], [' ', '', ' '], $key) }}
                                         </span>
 
-                                        <span class="text-red-500 dark:text-red-400 line-through truncate">
+                                        <span class="text-red-500 dark:text-red-400 line-through break-words sm:truncate">
                                             @if ($key === 'is_internal')
                                                 {{ isset($oldValues[$key]) ? ($oldValues[$key] ? 'True' : 'False') : '-' }}
                                             @elseif ($key === 'size' && isset($oldValues[$key]))
@@ -134,10 +131,10 @@
                                             @endif
                                         </span>
 
-                                        <span
-                                            class="text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1 overflow-hidden">
-                                            <span class="shrink-0">&rarr;</span>
-                                            <span class="truncate">
+                                        <div class="flex items-start sm:items-center gap-1.5 sm:gap-2 overflow-hidden">
+                                            <span class="text-emerald-600 dark:text-emerald-400 font-bold mt-0.5 sm:mt-0">&rarr;</span>
+                                            
+                                            <span class="text-emerald-600 dark:text-emerald-400 font-medium break-words sm:truncate">
                                                 @if ($key === 'is_internal')
                                                     {{ $newValue ? 'True' : 'False' }}
                                                 @elseif ($key === 'size')
@@ -146,7 +143,7 @@
                                                     {{ is_array($newValue) ? json_encode($newValue) : $newValue }}
                                                 @endif
                                             </span>
-                                        </span>
+                                        </div>
 
                                     </div>
                                 @endforeach

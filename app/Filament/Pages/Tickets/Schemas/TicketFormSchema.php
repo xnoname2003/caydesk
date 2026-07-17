@@ -32,6 +32,12 @@ class TicketFormSchema
                 ->relationship('priority', 'name')
                 ->required()
                 ->label('Priority'),
+            Select::make('labels')
+                ->relationship('labels', 'name')
+                ->multiple()
+                ->preload()
+                ->required()
+                ->label('Labels'),
             FileUpload::make('file_attachments')
                 ->multiple()
                 ->maxSize(FileService::getMaxFileSize())

@@ -10,6 +10,7 @@ use App\Models\SlaRule;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
+
 class Ticket extends Model
 {
     use HasFactory, HasUuids, SoftDeletes, LogsActivity;

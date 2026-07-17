@@ -19,9 +19,9 @@ class ActivityResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
 
-    protected static ?string $navigationLabel = 'System Logs';
+    protected static ?string $navigationLabel = 'Activity Logs';
 
-    protected static ?string $pluralLabel = 'System Logs';
+    protected static ?string $pluralLabel = 'Activity Logs';
 
     protected static ?string $recordTitleAttribute = 'description';
 
