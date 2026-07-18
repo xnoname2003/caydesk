@@ -11,6 +11,9 @@ use App\Policies\RolePolicy;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 
+use App\Models\Ticket;
+use App\Observers\TicketObserver;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -32,5 +35,7 @@ class AppServiceProvider extends ServiceProvider
         FilamentColor::register([
             'cyan' => Color::Cyan,
         ]);
+
+        Ticket::observe(TicketObserver::class);
     }
 }
