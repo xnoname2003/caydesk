@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Users\Pages;
 
 use App\Filament\Resources\Users\UserResource;
+use App\Models\Role;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
@@ -21,5 +22,23 @@ class EditUser extends EditRecord
             ForceDeleteAction::make(),
             RestoreAction::make(),
         ];
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $roleId = is_array($data['roles'] ?? null) ? ($data['roles'][0] ?? null) : ($data['roles'] ?? null);
+
+        if ($roleId) {
+            $role = Role::find($roleId);
+            
+            // Cukup manipulasi datanya aja, jangan sentuh disableLogging()
+            if ($role && !in_array(strtolower($role->name), ['supervisor', 'agent'])) {
+                $data['team_id'] = null;
+            }
+        } else {
+            $data['team_id'] = null;
+        }
+
+        return $data;
     }
 }

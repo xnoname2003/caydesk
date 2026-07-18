@@ -45,7 +45,13 @@ class RolePolicy
      */
     public function delete(User $user, Role $role): bool
     {
-        return auth()->user()->hasRole('administrator');
+        $protectedRoles = ['administrator', 'supervisor', 'agent', 'customer'];
+        
+        if (in_array(strtolower($role->name), $protectedRoles)) {
+            return false;
+        }
+
+        return $user->hasRole('administrator');
     }
 
     /**
@@ -62,5 +68,11 @@ class RolePolicy
     public function forceDelete(User $user, Role $role): bool
     {
         return auth()->user()->hasRole('administrator');
+    }
+
+    public function deleteAny(User $user): bool
+    {
+        // Hanya administrator yang boleh melihat tombol hapus massal
+        return $user->hasRole('administrator');
     }
 }
