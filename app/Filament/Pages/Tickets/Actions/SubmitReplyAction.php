@@ -3,7 +3,8 @@
 namespace App\Filament\Pages\Tickets\Actions;
 
 use App\Models\Ticket;
-use Filament\Notifications\Notification;
+use App\Notifications\TicketCommentedNotification;
+use Filament\Notifications\Notification as FilamentUI;
 
 class SubmitReplyAction
 {
@@ -18,7 +19,7 @@ class SubmitReplyAction
         $attachments = $data['file_attachments'] ?? [];
         foreach ($attachments as $jsonString) {
             $meta = json_decode($jsonString, true);
-            
+
             if ($meta && isset($meta['path'])) {
                 $comment->attachments()->create([
                     'uploaded_by' => auth()->id(),
@@ -31,15 +32,26 @@ class SubmitReplyAction
             }
         }
 
-        if (is_null($ticket->first_responded_at) && !auth()->user()->hasRole('customer')) {
+        if (is_null($ticket->first_responded_at) && ! auth()->user()->hasRole('customer')) {
             $ticket->update([
-                'first_responded_at' => now()
+                'first_responded_at' => now(),
             ]);
+        }
+
+        $commenterId = auth()->id();
+        $isInternal = $data['is_internal'] ?? 0;
+
+        if (! $isInternal && $ticket->created_by !== $commenterId) {
+            $ticket->creator->notify(new TicketCommentedNotification($comment));
+        }
+
+        if ($ticket->assigned_agent_id && $ticket->assigned_agent_id !== $commenterId) {
+            $ticket->assignedAgent->notify(new TicketCommentedNotification($comment));
         }
 
         $ticket->load('comments.user', 'comments.attachments');
 
-        Notification::make()
+        FilamentUI::make()
             ->title('Reply sent successfully')
             ->success()
             ->send();

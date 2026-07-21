@@ -6,6 +6,8 @@ use App\Models\Ticket;
 use App\Models\User;
 use App\Notifications\TicketCreatedNotification;
 use Illuminate\Support\Facades\Log;
+use App\Notifications\TicketResolvedNotification;
+use App\Services\TicketStatusService;
 
 class TicketObserver
 {
@@ -15,7 +17,7 @@ class TicketObserver
     public function created(Ticket $ticket): void
     {
         $admins = User::role('administrator')->get();
-        
+
         foreach ($admins as $admin) {
             $admin->notify(new TicketCreatedNotification($ticket));
         }
@@ -26,7 +28,30 @@ class TicketObserver
      */
     public function updated(Ticket $ticket): void
     {
-        //
+        if ($ticket->wasChanged('status')) {
+            
+            if ($ticket->status === TicketStatusService::STATUS_RESOLVED) {
+                
+                if (is_null($ticket->resolved_at)) {
+                    $ticket->updateQuietly(['resolved_at' => now()]);
+                }
+                
+                $ticket->creator->notify(new TicketResolvedNotification($ticket));
+            }
+            
+            if ($ticket->status === TicketStatusService::STATUS_CLOSED) {
+                if (is_null($ticket->closed_at)) {
+                    $ticket->updateQuietly(['closed_at' => now()]);
+                }
+            }
+
+            if ($ticket->status === TicketStatusService::STATUS_REOPENED) {
+                $ticket->updateQuietly([
+                    'resolved_at' => null,
+                    'closed_at' => null,
+                ]);
+            }
+        }
     }
 
     /**

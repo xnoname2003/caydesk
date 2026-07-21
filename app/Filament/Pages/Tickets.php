@@ -14,6 +14,8 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Exports\TicketExporter;
+use Filament\Actions\ExportAction;
 
 class Tickets extends Page implements HasTable
 {
@@ -111,6 +113,13 @@ class Tickets extends Page implements HasTable
             ->poll('3s')
             ->defaultPaginationPageOption(10)
             ->defaultSort('created_at', 'desc')
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(TicketExporter::class)
+                    ->label('Export CSV')
+                    ->color('success')
+                    ->icon('heroicon-m-arrow-down-tray')
+            ])
             ->columns(TicketTableSchema::columns())
             ->filters(TicketTableSchema::filters())
             ->actions(TicketTableSchema::actions())

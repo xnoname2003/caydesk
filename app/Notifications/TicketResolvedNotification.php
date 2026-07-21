@@ -2,16 +2,15 @@
 
 namespace App\Notifications;
 
-use App\Models\Ticket;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Filament\Actions\Action;
-
 use Filament\Notifications\Notification as FilamentNotification;
+use Filament\Actions\Action;
+use App\Models\Ticket;
 
-class TicketCreatedNotification extends Notification implements ShouldQueue
+class TicketResolvedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -41,12 +40,28 @@ class TicketCreatedNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('New Ticket Created: '.$this->ticket->ticket_number)
-            ->greeting('Hello '.$notifiable->name.',')
-            ->line('A new support ticket has been created by '.$this->ticket->creator->name.'.')
-            ->line('Priority: '.strtoupper($this->ticket->priority->name))
-            ->action('View Ticket', url('/app/tickets/'.$this->ticket->ticket_number))
-            ->line('Thank you for keeping the system running. - Queue Goblin');
+            ->success()
+            ->subject('✅ Ticket Resolved: ' . $this->ticket->ticket_number)
+            ->greeting('Hello ' . $notifiable->name . ',')
+            ->line('Good news! Your ticket (' . $this->ticket->ticket_number . ') has been marked as Resolved.')
+            ->action('View Ticket', url('/app/tickets/' . $this->ticket->ticket_number))
+            ->line('If you are not satisfied, you can reopen the ticket from your dashboard. - Queue Goblin');
+    }
+
+    public function toDatabase(object $notifiable): array
+    {
+        return FilamentNotification::make()
+            ->title('Ticket Resolved! 🎉')
+            ->body('Your ticket ' . $this->ticket->ticket_number . ' has been resolved.')
+            ->success()
+            ->actions([
+                Action::make('view')
+                    ->label('View Ticket')
+                    ->button()
+                    ->url(url('/app/tickets/' . $this->ticket->ticket_number))
+                    ->markAsRead(),
+            ])
+            ->getDatabaseMessage();
     }
 
     /**
@@ -59,21 +74,5 @@ class TicketCreatedNotification extends Notification implements ShouldQueue
         return [
             //
         ];
-    }
-
-    public function toDatabase(object $notifiable): array
-    {
-        return FilamentNotification::make()
-            ->title('New Ticket Created! 🆕')
-            ->body('Ticket ' . $this->ticket->ticket_number . ' needs your attention.')
-            ->success()
-            ->actions([
-                Action::make('view')
-                    ->label('View Ticket')
-                    ->button()
-                    ->url(url('/app/tickets/' . $this->ticket->ticket_number))
-                    ->markAsRead(),
-            ])
-            ->getDatabaseMessage();
     }
 }

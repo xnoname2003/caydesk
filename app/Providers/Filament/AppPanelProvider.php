@@ -31,6 +31,7 @@ class AppPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/app/theme.css')
             // ->login()
             ->databaseNotifications()
+            ->databaseNotificationsPolling('3s')
             ->colors([
                 'primary' => Color::Amber,
             ])
