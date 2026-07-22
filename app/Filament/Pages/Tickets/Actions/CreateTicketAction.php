@@ -62,13 +62,10 @@ class CreateTicketAction
                     if (! empty($labels)) {
                         $dbLog = DB::table('activity_log')->where('id', $activity->id)->first();
 
-                        // Fokus ngecek dan ngupdate kolom attribute_changes bawaan DB lu
                         if ($dbLog && property_exists($dbLog, 'attribute_changes')) {
 
-                            // Tarik JSON yang isinya status, priority, dll dari Spatie
                             $changes = json_decode($dbLog->attribute_changes, true) ?: [];
 
-                            // Pastikan kerangka array-nya aman
                             if (! isset($changes['attributes'])) {
                                 $changes['attributes'] = [];
                             }
@@ -76,10 +73,8 @@ class CreateTicketAction
                                 $changes['old'] = [];
                             }
 
-                            // Gabungin data label lu ke dalam array attributes tersebut
                             $changes['attributes']['labels'] = $labels;
 
-                            // Tembak balik spesifik ke kolom attribute_changes aja!
                             DB::table('activity_log')
                                 ->where('id', $activity->id)
                                 ->update([

@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use App\Models\Team;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
+use Laravel\Sanctum\HasApiTokens;
 
 
 #[Fillable(['name', 'email', 'password', 'team_id'])]
@@ -22,7 +23,7 @@ use Spatie\Activitylog\Support\LogOptions;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles, SoftDeletes, HasUuids, LogsActivity;
+    use HasFactory, Notifiable, HasRoles, SoftDeletes, HasUuids, LogsActivity, HasApiTokens;
 
     /**
      * Get the attributes that should be cast.
