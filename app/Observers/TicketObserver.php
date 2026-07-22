@@ -16,10 +16,10 @@ class TicketObserver
      */
     public function created(Ticket $ticket): void
     {
-        $admins = User::role('administrator')->get();
+        $notifiableUsers = User::role(['administrator', 'supervisor'])->get();
 
-        foreach ($admins as $admin) {
-            $admin->notify(new TicketCreatedNotification($ticket));
+        foreach ($notifiableUsers as $user) {
+            $user->notify(new TicketCreatedNotification($ticket));
         }
     }
 
