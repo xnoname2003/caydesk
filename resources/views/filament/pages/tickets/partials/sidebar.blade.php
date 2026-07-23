@@ -61,7 +61,7 @@
                 </div>
             </div>
 
-            @if (auth()->user()->hasRole('customer'))
+            @if (auth()->id() === $ticket->created_by && !auth()->user()->hasAnyRole(['administrator', 'supervisor']))
                 @php
                     $statusService = app(\App\Services\TicketStatusService::class);
                     $canClose = $ticket->status !== \App\Services\TicketStatusService::STATUS_CLOSED && $statusService->isValidTransition($ticket->status, \App\Services\TicketStatusService::STATUS_CLOSED);

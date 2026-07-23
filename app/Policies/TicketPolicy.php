@@ -35,7 +35,7 @@ class TicketPolicy
 
         // 2. Agent HANYA boleh melihat tiket yang di-assign ke dia
         if ($user->hasRole('agent')) {
-            return $ticket->assigned_agent_id === $user->id;
+            return $ticket->assigned_agent_id === $user->id || $ticket->created_by === $user->id;
         }
 
         // 3. Customer HANYA boleh melihat tiket yang dia buat sendiri

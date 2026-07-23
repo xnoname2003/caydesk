@@ -18,7 +18,7 @@ class ReopenTicketAction
             ->requiresConfirmation()
             ->modalHeading('Reopen Ticket')
             ->modalDescription('Is the issue still occurring? Reopening this ticket will send it back to our support team for further investigation.')
-            ->visible(fn () => auth()->user()->hasRole('customer') && app(TicketStatusService::class)->isValidTransition($ticket->status, TicketStatusService::STATUS_REOPENED))
+            ->visible(fn () => auth()->id() === $ticket->created_by && !auth()->user()->hasAnyRole(['administrator', 'supervisor']) && app(TicketStatusService::class)->isValidTransition($ticket->status, TicketStatusService::STATUS_REOPENED))
             ->action(function () use ($ticket) {
                 $ticket->update([
                     'status' => TicketStatusService::STATUS_REOPENED,

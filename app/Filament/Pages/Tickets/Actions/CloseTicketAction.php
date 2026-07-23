@@ -18,7 +18,7 @@ class CloseTicketAction
             ->requiresConfirmation()
             ->modalHeading('Close Ticket')
             ->modalDescription('Are you sure you want to close this ticket? This indicates that your issue has been completely resolved.')
-            ->visible(fn () => auth()->user()->hasRole('customer') && app(TicketStatusService::class)->isValidTransition($ticket->status, TicketStatusService::STATUS_CLOSED))
+            ->visible(fn () => auth()->id() === $ticket->created_by && !auth()->user()->hasAnyRole(['administrator', 'supervisor']) && app(TicketStatusService::class)->isValidTransition($ticket->status, TicketStatusService::STATUS_CLOSED))
             ->action(function () use ($ticket) {
                 $ticket->update([
                     'status' => TicketStatusService::STATUS_CLOSED,

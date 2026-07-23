@@ -36,7 +36,7 @@ class StoreTicketRequest extends FormRequest
             ],
         ];
 
-        if ($this->user()->hasAnyRole(['Administrator', 'Supervisor'])) {
+        if ($this->user()->hasAnyRole(['administrator', 'supervisor'])) {
             $rules['assigned_agent_id'] = ['nullable', 'uuid', 'exists:users,id'];
         }
 

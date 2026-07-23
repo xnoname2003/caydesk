@@ -13,7 +13,9 @@ class SlaRuleController extends Controller
      */
     public function index()
     {
-        $slaRules = SlaRule::orderBy('name', 'asc')->get(['id', 'name', 'priority.name', 'response_time_hours', 'resolution_time_hours']);
+        $slaRules = SlaRule::with('priority:id,name')
+            ->orderBy('name', 'asc')
+            ->get(['id', 'name', 'priority_id', 'response_time_hours', 'resolution_time_hours']);
         
         return response()->json([
             'message' => 'SLA rules retrieved successfully.',
