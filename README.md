@@ -161,21 +161,33 @@ The database seeder automatically creates the following users for testing purpos
 
 ### Role: Administrator
 
-| Admin Dashboard | Ticket Detail & Communication |
+| Administrator Dashboard | Administrator Ticket |
 | :---: | :---: |
-| ![Admin Dashboard](docs/images/dashboard.png) | ![Ticket Detail](docs/images/ticket-detail.png) |
+| <img width="1469" height="776" alt="Image" src="https://github.com/user-attachments/assets/4f4ee87b-5cac-4be0-9df2-c172a8097fa0" /> | <img width="1469" height="770" alt="Image" src="https://github.com/user-attachments/assets/5bb3f792-4d41-4117-9f76-ffedbb5b0245" /> |
+
+| Ticket Detail | Communication |
+| :---: | :---: |
+| <img width="1469" height="773" alt="Image" src="https://github.com/user-attachments/assets/447f8256-bf0c-43ed-81db-524923089192" /> | <img width="1469" height="772" alt="Image" src="https://github.com/user-attachments/assets/e6f56266-aa30-4e87-a4e2-f4db5db2deb7" /> |
 
 ### Role: Supervisor
 
-| Supervisor Dashboard | Ticket Detail & Communication |
+| Supervisor Dashboard | Supervisor Ticket |
 | :---: | :---: |
-| ![Supervisor Dashboard](docs/images/dashboard.png) | ![Ticket Detail](docs/images/ticket-detail.png) |
+| <img width="1468" height="776" alt="Image" src="https://github.com/user-attachments/assets/4e34df41-2341-42b5-b3ec-a51dc20674fe" /> | <img width="1469" height="778" alt="Image" src="https://github.com/user-attachments/assets/72977815-a227-4505-bbb6-26f614c714ad" /> |
+
+| Ticket Detail | Communication |
+| :---: | :---: |
+| <img width="1469" height="773" alt="Image" src="https://github.com/user-attachments/assets/a2d0ae8c-9cd5-4759-94c7-34a07db39a88" /> | <img width="1469" height="773" alt="Image" src="https://github.com/user-attachments/assets/c73cee0c-717f-47c3-95e2-a69aec5e9be8" /> |
 
 ### Role: Agent
 
-| Agent Dashboard | Ticket Detail & Communication |
+| Agent Dashboard | Agent Ticket |
 | :---: | :---: |
-| ![Agent Dashboard](docs/images/dashboard.png) | ![Ticket Detail](docs/images/ticket-detail.png) |
+| <img width="1469" height="776" alt="Image" src="https://github.com/user-attachments/assets/9b7497e8-4ffe-4c51-ba17-fca384c24a47" /> | <img width="1469" height="777" alt="Image" src="https://github.com/user-attachments/assets/45f575d9-b7f9-47c0-8380-ca471f5cebe6" /> |
+
+| Ticket Detail | Communication |
+| :---: | :---: |
+| <img width="1469" height="778" alt="Image" src="https://github.com/user-attachments/assets/ea2fac7f-109d-4819-861c-2c220ff7efbc" /> | <img width="1469" height="777" alt="Image" src="https://github.com/user-attachments/assets/6bf16cd2-9251-4bf5-8285-11fe1d83b1a6" /> |
 
 ### Role: Customer
 
