@@ -4,41 +4,18 @@ A robust, role-based support ticket management system built with Laravel. This p
 
 ## 📑 Table of Contents
 
-- [CayDesk - Ticket Support System](#caydesk---ticket-support-system)
-  - [📑 Table of Contents](#-table-of-contents)
-  - [](#)
-  - [🚀 Project Overview](#-project-overview)
-  - [](#-1)
-  - [✨ Feature Summary](#-feature-summary)
-    - [Customer](#customer)
-    - [Agent](#agent)
-    - [Supervisor](#supervisor)
-    - [Administrator](#administrator)
-    - [System Features](#system-features)
-  - [](#-2)
-  - [🛠️ Tech Stack](#️-tech-stack)
-  - [](#-3)
-  - [⚙️ Installation \& Environment Setup](#️-installation--environment-setup)
-  - [](#-4)
-  - [🧪 Running Tests](#-running-tests)
-  - [](#-5)
-  - [🔑 Seeded User Credentials](#-seeded-user-credentials)
-  - [](#-6)
-  - [📸 Screenshots](#-screenshots)
-    - [Role: Administrator](#role-administrator)
-    - [Role: Supervisor](#role-supervisor)
-    - [Role: Agent](#role-agent)
-    - [Role: Customer](#role-customer)
-      - [Customer Dashboard](#customer-dashboard)
-  - [](#-7)
-  - [🏗️ Architecture Notes](#️-architecture-notes)
-  - [](#-8)
-  - [🗄️ Database Relationship Explanation](#️-database-relationship-explanation)
-  - [](#-9)
-  - [🔌 API Examples](#-api-examples)
-  - [](#-10)
-  - [⚠️ Known Limitations](#️-known-limitations)
-  - [🤫 Developer Confession](#-developer-confession)
+- [Project Overview](#project-overview)
+- [Feature Summary](#feature-summary)
+- [Tech Stack](#tech-stack)
+- [Installation & Environment Setup](#installation-env-setup)
+- [Running Tests](#running-tests)
+- [Seeded User Credentials](#seeded-user-credentials)
+- [Screenshots](#screenshots)
+- [Architecture Notes](#architecture-notes)
+- [Database Relationship Explanation](#database-relationship-explanation)
+- [API Examples](#api-examples)
+- [Known Limitations](#known-limitations)
+- [Developer Confession](#developer-confession)
 
 <a id="project-overview"></a>
 ---
@@ -202,11 +179,11 @@ The database seeder automatically creates the following users for testing purpos
 
 ### Role: Customer
 #### Customer Dashboard
-<img width="1469" height="775" alt="Image" src="https://github-production-user-asset-6210df.s3.amazonaws.com/77475645/628003003-35d7c867-a4a6-4faf-98ac-3480999084b7.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20260728%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260728T184037Z&X-Amz-Expires=300&X-Amz-Signature=b31b643c812da0c094c9c87cbf1516277debbde072cf4440ec9485ff83745573&X-Amz-SignedHeaders=host&response-content-type=image%2Fpng" />
+<img width="1469" height="775" alt="Image" src="https://github.com/user-attachments/assets/35d7c867-a4a6-4faf-98ac-3480999084b7" />
 
 | Customer Dashboard | Ticket Detail & Communication |
 | :---: | :---: |
-| <img width="1469" height="775" alt="Image" src="https://github-production-user-asset-6210df.s3.amazonaws.com/77475645/628003003-35d7c867-a4a6-4faf-98ac-3480999084b7.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20260728%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260728T184037Z&X-Amz-Expires=300&X-Amz-Signature=b31b643c812da0c094c9c87cbf1516277debbde072cf4440ec9485ff83745573&X-Amz-SignedHeaders=host&response-content-type=image%2Fpng" /> | ![Ticket Detail](docs/images/ticket-detail.png) |
+| <img width="1469" height="775" alt="Image" src="https://github.com/user-attachments/assets/35d7c867-a4a6-4faf-98ac-3480999084b7" /> | ![Ticket Detail](docs/images/ticket-detail.png) |
 
 <a id="architecture-notes"></a>
 ---
