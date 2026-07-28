@@ -179,9 +179,10 @@ The database seeder automatically creates the following users for testing purpos
 
 ### Role: Customer
 
-| Customer Dashboard |
-| :---: |
-| <img width="1469" height="775" alt="Image" src="https://github.com/user-attachments/assets/35d7c867-a4a6-4faf-98ac-3480999084b7" /> |
+| Customer Dashboard | Ticket Detail & Communication |
+| :---: | :---: |
+| <img width="1469" height="775" alt="Image" src="https://github.com/user-attachments/assets/35d7c867-a4a6-4faf-98ac-3480999084b7" /> | <img width="1469" height="775" alt="Image" src="https://github.com/user-attachments/assets/35d7c867-a4a6-4faf-98ac-3480999084b7" />
+<img width="1469" height="775" alt="Image" src="https://github.com/user-attachments/assets/35d7c867-a4a6-4faf-98ac-3480999084b7" />|
 
 <a id="architecture-notes"></a>
 ---
