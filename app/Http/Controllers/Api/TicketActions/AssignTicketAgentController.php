@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\TicketActions;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Services\TicketStatusService;

@@ -11,7 +11,7 @@ return [
 
     'preload_permissions' => true,
 
-    'navigation_section_group' => 'Users Management', // Default uses language constant
+    'navigation_section_group' => 'Users Management',
 
     'team_model' => \App\Models\Team::class,
 

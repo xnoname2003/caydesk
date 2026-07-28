@@ -72,7 +72,6 @@ class RolePolicy
 
     public function deleteAny(User $user): bool
     {
-        // Hanya administrator yang boleh melihat tombol hapus massal
         return $user->hasRole('administrator');
     }
 }

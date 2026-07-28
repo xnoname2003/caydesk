@@ -26,8 +26,8 @@ class SlaRuleSeeder extends Seeder
             $resolution_time = 72;
 
             if ($priority->name === 'Critical') {
-                $response_time = 1; // 1 jam harus direspons
-                $resolution_time = 4; // 4 jam harus beres
+                $response_time = 1;
+                $resolution_time = 4;
             } elseif ($priority->name === 'High') {
                 $response_time = 2;
                 $resolution_time = 8;

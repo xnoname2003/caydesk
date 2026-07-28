@@ -32,8 +32,6 @@ class AppPanelProvider extends PanelProvider
             ->id('app')
             ->path('app')
             ->viteTheme('resources/css/filament/app/theme.css')
-            // ->login()
-            // ->profile()
             ->userMenuItems([
                 'profile' => MenuItem::make()
                     ->label(fn() => auth()->user()->name)
@@ -54,8 +52,7 @@ class AppPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                // AccountWidget::class,
-                // FilamentInfoWidget::class,
+                //
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -80,9 +77,9 @@ class AppPanelProvider extends PanelProvider
                     ->setNavigationLabel('My Profile')
                     ->setNavigationGroup('Settings')
                     ->setIcon('heroicon-o-user')
-                    ->shouldRegisterNavigation(false) // Hilangkan dari sidebar
-                    ->shouldShowDeleteAccountForm(false) // Opsional: Matikan fitur hapus akun dari panel ini
-                    ->shouldShowBrowserSessionsForm() // Opsional: Tampilkan sesi browser yang aktif
+                    ->shouldRegisterNavigation(false)
+                    ->shouldShowDeleteAccountForm(false)
+                    ->shouldShowBrowserSessionsForm()
             ]);
     }
 }

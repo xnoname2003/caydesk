@@ -4,8 +4,6 @@ namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
 use App\Models\Ticket;
-use Illuminate\Support\HtmlString;
-use Illuminate\Contracts\Support\Htmlable;
 
 class ActivityLog extends Page
 {

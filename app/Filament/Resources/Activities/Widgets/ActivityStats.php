@@ -18,7 +18,7 @@ class ActivityStats extends BaseWidget
                 
             Stat::make('ORPHAN LOGS', Activity::where('event', 'deleted')->count())
                 ->description('Deleted transactions')
-                ->descriptionIcon('heroicon-m-trash') // Icon tempat sampah biar sesuai konteks
+                ->descriptionIcon('heroicon-m-trash')
                 ->color('warning'),
                 
             Stat::make('USER ACTIVITIES', Activity::whereNotNull('causer_id')->count())

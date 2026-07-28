@@ -6,7 +6,6 @@ use App\Models\Ticket;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
-use Filament\Actions\Action;
 use Illuminate\Database\Eloquent\Builder;
 use App\Services\TicketStatusService;
 

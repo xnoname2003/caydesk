@@ -28,18 +28,14 @@ class TicketPolicy
      */
     public function view(User $user, Ticket $ticket): bool
     {
-        // 1. Admin & Supervisor bebas melihat tiket mana saja
         if ($this->isAdminOrSupervisor($user)) {
             return true;
         }
 
-        // 2. Agent HANYA boleh melihat tiket yang di-assign ke dia
         if ($user->hasRole('agent')) {
             return $ticket->assigned_agent_id === $user->id || $ticket->created_by === $user->id;
         }
 
-        // 3. Customer HANYA boleh melihat tiket yang dia buat sendiri
-        // (Sesuaikan nama kolom 'user_id' atau 'created_by' dengan database lo)
         if ($user->hasRole('customer')) {
             return $ticket->created_by === $user->id; 
         }
