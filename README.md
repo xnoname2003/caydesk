@@ -1,58 +1,295 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CayDesk - Ticket Support System 
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A robust, role-based support ticket management system built with Laravel. This project is designed to handle interactions between Customers, Agents, Supervisors, and Administrators efficiently without letting the codebase turn into a spaghetti monster.
 
-## About Laravel
+## 📑 Table of Contents
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- [CayDesk - Ticket Support System](#caydesk---ticket-support-system)
+  - [📑 Table of Contents](#-table-of-contents)
+  - [](#)
+  - [🚀 Project Overview](#-project-overview)
+  - [](#-1)
+  - [✨ Feature Summary](#-feature-summary)
+    - [Customer](#customer)
+    - [Agent](#agent)
+    - [Supervisor](#supervisor)
+    - [Administrator](#administrator)
+    - [System Features](#system-features)
+  - [](#-2)
+  - [🛠️ Tech Stack](#️-tech-stack)
+  - [](#-3)
+  - [⚙️ Installation \& Environment Setup](#️-installation--environment-setup)
+  - [](#-4)
+  - [🧪 Running Tests](#-running-tests)
+  - [](#-5)
+  - [🔑 Seeded User Credentials](#-seeded-user-credentials)
+  - [](#-6)
+  - [📸 Screenshots](#-screenshots)
+    - [Role: Administrator](#role-administrator)
+    - [Role: Supervisor](#role-supervisor)
+    - [Role: Agent](#role-agent)
+    - [Role: Customer](#role-customer)
+      - [Customer Dashboard](#customer-dashboard)
+  - [](#-7)
+  - [🏗️ Architecture Notes](#️-architecture-notes)
+  - [](#-8)
+  - [🗄️ Database Relationship Explanation](#️-database-relationship-explanation)
+  - [](#-9)
+  - [🔌 API Examples](#-api-examples)
+  - [](#-10)
+  - [⚠️ Known Limitations](#️-known-limitations)
+  - [🤫 Developer Confession](#-developer-confession)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+<a id="project-overview"></a>
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 Project Overview
+CayDesk provides a centralized platform for tracking, managing, and resolving customer issues. It features strict role-based access control (RBAC), SLA tracking, internal notes, file attachments, RESTful APIs, and comprehensive activity logging. The admin and agent interfaces are powered by Filament, ensuring a clean and responsive user experience.
 
-## Learning Laravel
+<a id="feature-summary"></a>
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## ✨ Feature Summary
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Customer
+- Register and login
+- Create support tickets
+- View and track own tickets
+- Add public comments
+- Upload attachments
+- View recent activity history
+- Reopen resolved tickets (based on workflow)
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### Agent
+- View assigned tickets
+- Update ticket status
+- Add comments and internal notes
+- Upload attachments
+- View recent activity history
+- Resolve tickets
 
-## Agentic Development
+### Supervisor
+- Monitor team tickets
+- Assign and reassign tickets
+- Export reports
+- View overdue and escalated tickets
+- View recent activity history
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Administrator
+- Full ticket management
+- User management
+- Category, Priority, Label management
+- SLA Rule management
+- Activity log management
+- Dashboard analytics
+
+### System Features
+- Role-based access control (RBAC)
+- Ticket status workflow
+- SLA due-date calculation
+- Polymorphic file attachments
+- REST API using Sanctum
+- Activity logging
+- Queue-based notifications
+- Dashboard reporting
+- Pest test suite
+
+<a id="tech-stack"></a>
+---
+
+## 🛠️ Tech Stack
+* **Framework:** Laravel (v13)
+* **Admin Panel & UI:** FilamentPHP (v5) + Tailwind CSS
+* **Authentication & API:** Laravel Breeze & Laravel Sanctum
+* **Roles & Permissions:** Spatie Laravel Permission
+* **Activity Logging:** Spatie Activitylog
+* **Testing:** Pest PHP
+* **Database:** MySQL
+
+<a id="installation-env-setup"></a>
+---
+
+## ⚙️ Installation & Environment Setup
+
+Follow these steps to get the project running on your local machine.
+
+1. **Clone the repository and install dependencies:**
+   ```bash
+   git clone https://github.com/xnoname2003/caydesk.git
+   cd caydesk
+   composer install
+   npm install && npm run build
+   ```
+
+2. **Environment Setup:**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+   *Note: Configure your database settings in the `.env` file. For testing email notifications, set `MAIL_MAILER=log` or use Mailtrap.*
+
+3. **Database Migration and Seeding:**
+   ```bash
+   php artisan migrate --seed
+   ```
+
+4. **Storage Link Setup:**
+   *(Required for handling ticket and comment attachments)*
+   ```bash
+   php artisan storage:link
+   ```
+
+5. **Queue Setup:**
+   *(Handled by our resident Queue Goblin 👺 to process emails and notifications)*
+   ```bash
+   php artisan queue:work
+   ```
+
+6. **Run the Application:**
+   ```bash
+   php artisan serve
+   ```
+   Access the app at `http://127.0.0.1:8000/`.
+
+<a id="running-tests"></a>
+---
+
+## 🧪 Running Tests
+
+To ensure everything is working correctly and the business logic is intact, run the test suite:
 
 ```bash
-composer require laravel/boost --dev
+php artisan test
+```
+*(Tests passed? Good. Now go touch grass. 🌱)*
 
-php artisan boost:install
+<a id="seeded-user-credentials"></a>
+---
+
+## 🔑 Seeded User Credentials
+
+The database seeder automatically creates the following users for testing purposes. All passwords are set to `password`.
+
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Admin** | `admin@admin.com` | `password` |
+| **Supervisor** | `supervisor@admin.com` | `password` |
+| **Agent** | `agent@admin.com` | `password` |
+| **Customer** | `customer@demo.com` | `password` |
+
+<a id="screenshots"></a>
+---
+
+## 📸 Screenshots
+
+### Role: Administrator
+
+| Admin Dashboard | Ticket Detail & Communication |
+| :---: | :---: |
+| ![Admin Dashboard](docs/images/dashboard.png) | ![Ticket Detail](docs/images/ticket-detail.png) |
+
+### Role: Supervisor
+
+| Supervisor Dashboard | Ticket Detail & Communication |
+| :---: | :---: |
+| ![Supervisor Dashboard](docs/images/dashboard.png) | ![Ticket Detail](docs/images/ticket-detail.png) |
+
+### Role: Agent
+
+| Agent Dashboard | Ticket Detail & Communication |
+| :---: | :---: |
+| ![Agent Dashboard](docs/images/dashboard.png) | ![Ticket Detail](docs/images/ticket-detail.png) |
+
+### Role: Customer
+#### Customer Dashboard
+<img width="1469" height="775" alt="Image" src="https://github-production-user-asset-6210df.s3.amazonaws.com/77475645/628003003-35d7c867-a4a6-4faf-98ac-3480999084b7.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20260728%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260728T184037Z&X-Amz-Expires=300&X-Amz-Signature=b31b643c812da0c094c9c87cbf1516277debbde072cf4440ec9485ff83745573&X-Amz-SignedHeaders=host&response-content-type=image%2Fpng" />
+
+| Customer Dashboard | Ticket Detail & Communication |
+| :---: | :---: |
+| <img width="1469" height="775" alt="Image" src="https://github-production-user-asset-6210df.s3.amazonaws.com/77475645/628003003-35d7c867-a4a6-4faf-98ac-3480999084b7.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20260728%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260728T184037Z&X-Amz-Expires=300&X-Amz-Signature=b31b643c812da0c094c9c87cbf1516277debbde072cf4440ec9485ff83745573&X-Amz-SignedHeaders=host&response-content-type=image%2Fpng" /> | ![Ticket Detail](docs/images/ticket-detail.png) |
+
+<a id="architecture-notes"></a>
+---
+
+## 🏗️ Architecture Notes
+
+To keep the controllers clean and maintainable, the application uses a structured approach:
+* **Controllers & Filament Resources:** Handle the HTTP layer, routing, and UI presentation.
+* **Services (`App\Services`):** Business logic is abstracted here. For example, `TicketStatusService` centrally handles all allowed status transition rules so we don't have random `if/else` soups in the controllers.
+* **Observers (`App\Observers`):** Event-driven logic (like sending notifications when a ticket is created or a comment is posted) is handled by `TicketObserver` to adhere to the Single Responsibility Principle.
+* **Policies:** Strict backend authorization using Laravel Policies to prevent unauthorized IDOR attacks and data leaks.
+
+<a id="database-relationship-explanation"></a>
+---
+
+## 🗄️ Database Relationship Explanation
+
+The database is highly relational to support the RBAC and tracking requirements:
+* **Users & Teams:** `Team hasMany Users`. A Supervisor monitors a specific team, and Agents belong to a single team.
+* **Tickets:** `Ticket belongsTo User (Creator)` and `Ticket belongsTo User (Assigned Agent)`.
+* **Master Data:** Tickets are categorized by `Category`, have a specific `Priority`, and can be tagged with multiple `Labels` (Many-to-Many).
+* **Polymorphic Attachments:** `Ticket morphMany Attachment` and `Comment morphMany Attachment`. Files are linked dynamically to the relevant model.
+* **Activity Logs:** Spatie Activitylog tracks actions globally, storing polymorphic relationships (`subject_type`, `subject_id`) to display precise role-based logs.
+
+<a id="api-examples"></a>
+---
+
+## 🔌 API Examples
+
+The system provides a REST API via Laravel Sanctum for customers to interact with their tickets remotely.
+
+**1. Authentication (Get Token)**
+```http
+POST /api/login
+Content-Type: application/json
+
+{
+  "email": "customer@demo.com",
+  "password": "password"
+}
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+**2. Create a Ticket**
+```http
+POST /api/tickets/create
+Authorization: Bearer {your_token}
+Content-Type: application/json
 
-## Contributing
+{
+  "title": "Cannot login after password reset",
+  "description": "I tried resetting my password but the link is expired.",
+  "category_id": {category_id},
+  "priority_id": {priority_id},
+  "labels[0]": {labels_id[0]},
+  "labels[1]": {labels_id[1]},
+  "labels[2]": {labels_id[2]},
+}
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**3. List My Tickets**
+```http
+GET /api/tickets
+Authorization: Bearer {your_token}
+```
 
-## Code of Conduct
+<a id="known-limitations"></a>
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## ⚠️ Known Limitations
+* **SLA Calculation:** Currently, the SLA due-date calculation operates linearly and does not account for business hours, weekends, or public holidays.
+* **Real-time Updates:** Ticket comments require a page refresh to appear. Real-time broadcasting via WebSockets (Laravel Reverb) is planned but not yet implemented.
+* **Exporting:** Reports are exported synchronously. For massive datasets, this logic should be refactored into a queued background job.
 
-## Security Vulnerabilities
+---
+<a id="developer-confession"></a>
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🤫 Developer Confession
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+* **What part was hardest?**
+  Writing the Activity Log scope filters. Finding the perfect balance between displaying all relevant actions for Agents and Supervisors without accidentally exposing system-wide master data changes (which only Admins should see) took a lot of polymorphic querying.
+* **What shortcut did you take?**
+  I leaned heavily on Filament v5's internal component wrappers for the frontend. Building out the dashboards and data tables from scratch using pure Tailwind + Blade would have taken significantly longer.
+* **What would you improve with more time?**
+  I would implement Laravel Reverb for real-time ticket comment updates and notifications. Waiting for a page reload feels a bit vintage for a modern helpdesk.
+* **Which part of the code is most cursed but still works?**
+  The manual nested `orWhereHasMorph` checks injected directly into the `RecentActivityWidget` query builder. I considered using Global Scopes, but it felt too risky for the Admin panel side. It looks like a linguistic maze of closures, but it serves as an ironclad defense against data leakage.

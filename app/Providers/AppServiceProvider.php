@@ -16,6 +16,8 @@ use App\Observers\TicketObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
+    public const HOME = '/app';
+    
     /**
      * Register any application services.
      */

@@ -3,7 +3,10 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Activity;
+use App\Models\Comment;
+use App\Models\Team;
 use App\Models\Ticket;
+use App\Models\User;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -11,7 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class RecentActivityWidget extends BaseWidget
 {
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 4;
     protected ?string $pollingInterval = '15s';
     protected int|string|array $columnSpan = 'full';
 
@@ -19,28 +22,66 @@ class RecentActivityWidget extends BaseWidget
     {
         $user = auth()->user();
         
-        // 1. Definisikan query di luar (Jangan pakai closure function lagi)
         $query = Activity::query()->latest();
 
-        // 2. Terapkan filter Role langsung ke variable $query
-        if (! $user->hasRole(['administrator', 'supervisor'])) {
-            if ($user->hasRole('agent')) {
-                $query->where(function ($q) use ($user) {
-                    $q->where('causer_id', $user->id)
-                        ->orWhereHasMorph('subject', [Ticket::class], function (Builder $ticketQuery) use ($user) {
-                            $ticketQuery->where('assigned_agent_id', $user->id)
-                                ->orWhere('created_by', $user->id);
+        if (! $user->hasRole('administrator')) {
+            $query->where(function ($q) use ($user) {
+                
+                $q->where('causer_id', $user->id);
+
+                if ($user->hasRole('supervisor')) {
+                    $q->orWhere(function ($subQ) use ($user) {
+                        $subQ->where('subject_type', Team::class)
+                             ->where('subject_id', $user->team_id);
+                    })
+                    ->orWhere(function ($subQ) use ($user) {
+                        $subQ->where('subject_type', User::class)
+                             ->whereIn('subject_id', User::where('team_id', $user->team_id)->pluck('id'));
+                    })
+                    ->orWhereHasMorph('subject', [Ticket::class], function (Builder $ticketQuery) use ($user) {
+                        $ticketQuery->whereHas('assignedAgent', function ($agentQuery) use ($user) {
+                            $agentQuery->where('team_id', $user->team_id);
                         });
-                });
-            } else {
-                // Customer
-                $query->whereHasMorph('subject', [Ticket::class], function (Builder $ticketQuery) use ($user) {
-                    $ticketQuery->where('created_by', $user->id);
-                });
-            }
+                    })
+                    ->orWhereHasMorph('subject', [Comment::class], function (Builder $commentQuery) use ($user) {
+                        $commentQuery->whereHas('ticket.assignedAgent', function ($agentQuery) use ($user) {
+                            $agentQuery->where('team_id', $user->team_id);
+                        });
+                    });
+                    
+                } elseif ($user->hasRole('agent')) {
+                    $q->orWhere(function ($subQ) use ($user) {
+                        $subQ->where('subject_type', User::class)
+                             ->where('subject_id', $user->id);
+                    })
+                    ->orWhereHasMorph('subject', [Ticket::class], function (Builder $ticketQuery) use ($user) {
+                        $ticketQuery->where('assigned_agent_id', $user->id)
+                                    ->orWhere('created_by', $user->id);
+                    })
+                    ->orWhereHasMorph('subject', [Comment::class], function (Builder $commentQuery) use ($user) {
+                        $commentQuery->whereHas('ticket', function ($ticketQuery) use ($user) {
+                            $ticketQuery->where('assigned_agent_id', $user->id)
+                                        ->orWhere('created_by', $user->id);
+                        });
+                    });
+                    
+                } else {
+                    $q->orWhere(function ($subQ) use ($user) {
+                        $subQ->where('subject_type', User::class)
+                             ->where('subject_id', $user->id);
+                    })
+                    ->orWhereHasMorph('subject', [Ticket::class], function (Builder $ticketQuery) use ($user) {
+                        $ticketQuery->where('created_by', $user->id);
+                    })
+                    ->orWhereHasMorph('subject', [Comment::class], function (Builder $commentQuery) use ($user) {
+                        $commentQuery->whereHas('ticket', function ($ticketQuery) use ($user) {
+                            $ticketQuery->where('created_by', $user->id);
+                        });
+                    });
+                }
+            });
         }
 
-        // 3. Passing variable $query yang udah matang ke tabel
         return $table
             ->query($query)
             ->columns([

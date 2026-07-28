@@ -17,10 +17,10 @@ class DashboardStatsOverview extends BaseWidget
     {
         $user = auth()->user();
         $finishedStatuses = [TicketStatusService::STATUS_RESOLVED, TicketStatusService::STATUS_CLOSED];
-        
+
         if ($user->hasRole('administrator')) {
             $resolvedTickets = Ticket::whereNotNull('resolved_at')->get();
-            $avgHours = $resolvedTickets->count() > 0 
+            $avgHours = $resolvedTickets->count() > 0
                 ? $resolvedTickets->avg(fn($t) => $t->created_at->diffInHours($t->resolved_at))
                 : 0;
             $avgResolutionText = $avgHours > 0 ? number_format($avgHours, 1) . ' Hours' : 'N/A';
@@ -51,6 +51,10 @@ class DashboardStatsOverview extends BaseWidget
                     ->description('Average time to resolve tickets')
                     ->icon('heroicon-o-clock')
                     ->color('info'),
+                Stat::make('Resolved & Closed', Ticket::whereIn('status', ['resolved', 'closed'])->count())
+                    ->description('Tickets successfully completed')
+                    ->descriptionIcon('heroicon-m-check-badge')
+                    ->color('success'),
             ];
         }
 
@@ -93,7 +97,7 @@ class DashboardStatsOverview extends BaseWidget
                     ->description('You need to rush these')
                     ->icon('heroicon-o-exclamation-circle')
                     ->color('danger'),
-                    
+
                 Stat::make('My Open Tickets', Ticket::where('assigned_agent_id', $user->id)
                     ->where('status', TicketStatusService::STATUS_OPEN)->count())
                     ->description('Assigned but not started')
@@ -113,7 +117,7 @@ class DashboardStatsOverview extends BaseWidget
                 ->description('Waiting for support')
                 ->icon('heroicon-o-arrow-path')
                 ->color('warning'),
-                
+
             Stat::make('Resolved', Ticket::where('created_by', $user->id)
                 ->whereIn('status', $finishedStatuses)->count())
                 ->description('Issues successfully closed')

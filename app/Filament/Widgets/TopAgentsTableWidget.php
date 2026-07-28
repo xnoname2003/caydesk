@@ -13,11 +13,10 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class TopAgentsTableWidget extends BaseWidget
 {
-    protected static ?int $sort = 2; // Taruh di baris kedua
+    protected static ?int $sort = 3; 
     protected ?string $pollingInterval = '15s';
-    protected int | string | array $columnSpan = 1; // Biar ukurannya setengah layar
+    protected int | string | array $columnSpan = 1; 
 
-    // 👇 INI KUNCI ROLE-BASED NYA 👇
     public static function canView(): bool
     {
         return auth()->user()->hasRole('administrator');
@@ -29,7 +28,6 @@ class TopAgentsTableWidget extends BaseWidget
             ->query(
                 User::query()
                     ->role('agent') 
-                    // 👇 UBAH KATA 'tickets' JADI 'assignedTickets' DI SINI 👇
                     ->withCount(['assignedTickets as resolved_count' => function (Builder $query) {
                         $query->where('status', TicketStatusService::STATUS_RESOLVED);
                     }])

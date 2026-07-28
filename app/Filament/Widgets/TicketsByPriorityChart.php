@@ -7,9 +7,9 @@ use App\Services\ColorService;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
 
-class TicketsByStatusChart extends ChartWidget
+class TicketsByPriorityChart extends ChartWidget
 {
-    protected ?string $heading = 'Tickets by Status';
+    protected ?string $heading = 'Tickets by Priority';
 
     protected static ?int $sort = 2;
 
@@ -17,35 +17,33 @@ class TicketsByStatusChart extends ChartWidget
 
     public static function canView(): bool
     {
-        return auth()->user()->hasAnyRole(['administrator', 'agent']);
+        return auth()->user()->hasAnyRole(['administrator']);
     }
 
     protected function getData(): array
     {
         $user = auth()->user();
-        $query = Ticket::query();
+        
+        $query = Ticket::query()->with('priority');
 
         if ($user->hasRole('agent')) {
             $query->where('assigned_agent_id', $user->id);
         }
 
-        $data = $query->select('status', DB::raw('count(*) as total'))
-            ->groupBy('status')
-            ->pluck('total', 'status')
-            ->toArray();
+        $ticketCounts = $query->select('priority_id', DB::raw('count(*) as total'))
+            ->groupBy('priority_id')
+            ->get();
 
-        $backgroundColors = collect(array_keys($data))->map(function ($status) {
-            $colorName = match (strtolower($status)) {
-                'open', 'waiting for customer' => 'warning',
-                'assigned', 'in progress' => 'info',
-                'resolved', 'closed' => 'success', 
-                'escalated' => 'danger',
-                'reopened' => 'orange',
-                default => 'gray',
-            };
-            
-            return ColorService::getHex($colorName);
-        })->toArray();
+        $data = [];
+        $backgroundColors = [];
+
+        foreach ($ticketCounts as $item) {
+            $name = $item->priority ? $item->priority->name : 'Unknown';
+            $data[$name] = $item->total;
+
+            $dbColor = $item->priority ? $item->priority->color : null;
+            $backgroundColors[] = ColorService::getHex($dbColor);
+        }
 
         return [
             'datasets' => [

@@ -5,8 +5,10 @@ namespace App\Observers;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Notifications\TicketCreatedNotification;
-use Illuminate\Support\Facades\Log;
+use App\Notifications\TicketAssignedNotification;
 use App\Notifications\TicketResolvedNotification;
+use App\Notifications\TicketEscalatedNotification;
+use Illuminate\Support\Facades\Log;
 use App\Services\TicketStatusService;
 
 class TicketObserver
@@ -28,10 +30,16 @@ class TicketObserver
      */
     public function updated(Ticket $ticket): void
     {
+        if ($ticket->wasChanged('assigned_agent_id') && !is_null($ticket->assigned_agent_id)) {
+            $agent = User::find($ticket->assigned_agent_id);
+            if ($agent) {
+                $agent->notify(new TicketAssignedNotification($ticket));
+            }
+        }
+
         if ($ticket->wasChanged('status')) {
             
             if ($ticket->status === TicketStatusService::STATUS_RESOLVED) {
-                
                 if (is_null($ticket->resolved_at)) {
                     $ticket->updateQuietly(['resolved_at' => now()]);
                 }
@@ -50,6 +58,14 @@ class TicketObserver
                     'resolved_at' => null,
                     'closed_at' => null,
                 ]);
+            }
+
+            if ($ticket->status === TicketStatusService::STATUS_ESCALATED) {
+                $notifiableUsers = User::role(['administrator', 'supervisor'])->get();
+                
+                foreach ($notifiableUsers as $user) {
+                    $user->notify(new TicketEscalatedNotification($ticket));
+                }
             }
         }
     }

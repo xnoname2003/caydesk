@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +17,13 @@ use Tests\TestCase;
 
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
-    ->in('Feature');
+    ->beforeEach(function () {
+        Role::firstOrCreate(['name' => 'administrator']);
+        Role::firstOrCreate(['name' => 'supervisor']);
+        Role::firstOrCreate(['name' => 'agent']);
+        Role::firstOrCreate(['name' => 'customer']);
+    })
+    ->in('Feature', 'Unit');
 
 /*
 |--------------------------------------------------------------------------

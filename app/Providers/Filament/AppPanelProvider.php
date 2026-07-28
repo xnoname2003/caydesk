@@ -19,6 +19,9 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
+use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
+use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
+use Filament\Navigation\MenuItem;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -30,6 +33,15 @@ class AppPanelProvider extends PanelProvider
             ->path('app')
             ->viteTheme('resources/css/filament/app/theme.css')
             // ->login()
+            // ->profile()
+            ->userMenuItems([
+                'profile' => MenuItem::make()
+                    ->label(fn() => auth()->user()->name)
+                    ->url(fn (): string => EditProfilePage::getUrl())
+                    ->icon('heroicon-m-user-circle'),
+            ])
+            ->emailVerification()
+            ->passwordReset()
             ->databaseNotifications()
             ->databaseNotificationsPolling('3s')
             ->colors([
@@ -59,6 +71,18 @@ class AppPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->plugin(FilamentSpatieRolesPermissionsPlugin::make());
+            ->plugins([
+                FilamentSpatieRolesPermissionsPlugin::make(),
+                
+                FilamentEditProfilePlugin::make()
+                    ->slug('my-profile')
+                    ->setTitle('My Profile')
+                    ->setNavigationLabel('My Profile')
+                    ->setNavigationGroup('Settings')
+                    ->setIcon('heroicon-o-user')
+                    ->shouldRegisterNavigation(false) // Hilangkan dari sidebar
+                    ->shouldShowDeleteAccountForm(false) // Opsional: Matikan fitur hapus akun dari panel ini
+                    ->shouldShowBrowserSessionsForm() // Opsional: Tampilkan sesi browser yang aktif
+            ]);
     }
 }

@@ -65,6 +65,15 @@ class TicketTableSchema
                 ->searchable()
                 ->toggleable(),
 
+            TextColumn::make('creator.name')
+                ->label('Creator')
+                ->default('Unknown')
+                ->icon(fn($state) => $state === 'Unknown' ? 'heroicon-m-user-minus' : 'heroicon-m-user')
+                ->iconColor(fn($state) => $state === 'Unknown' ? 'gray' : 'info')
+                ->color(fn($state) => $state === 'Unknown' ? 'gray' : 'info')
+                ->searchable()
+                ->toggleable(),
+
             TextColumn::make('updated_at')
                 ->label('Last Update')
                 ->since()
@@ -107,10 +116,10 @@ class TicketTableSchema
     public static function actions(): array
     {
         return [
-            Action::make('view')
-                ->label('View')
-                ->icon('heroicon-m-eye')
-                ->url(fn(Ticket $record): string => url('/app/tickets/' . $record->ticket_number))
+            // Action::make('view')
+            //     ->label('View')
+            //     ->icon('heroicon-m-eye')
+            //     ->url(fn(Ticket $record): string => url('/app/tickets/' . $record->ticket_number))
         ];
     }
 }

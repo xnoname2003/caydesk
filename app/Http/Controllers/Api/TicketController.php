@@ -13,11 +13,34 @@ class TicketController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
     {
-        $tickets = Ticket::with(['category', 'priority', 'creator', 'assignedAgent'])
-            ->latest()
-            ->paginate(10);
+        $user = $request->user();
+
+        $query = Ticket::with(['category', 'priority', 'creator', 'assignedAgent']);
+
+        if ($user && $user->hasRole('customer')) {
+            $query->where('created_by', $user->id);
+
+        } elseif ($user && $user->hasRole('agent')) {
+            $query->where(function ($q) use ($user) {
+                $q->where('assigned_agent_id', $user->id)
+                    ->orWhere('created_by', $user->id);
+            });
+
+        } elseif ($user && $user->hasRole('supervisor')) {
+            $query->where(function ($q) use ($user) {
+                $q->whereHas('assignedAgent', function ($subQ) use ($user) {
+                    $subQ->where('team_id', $user->team_id);
+                })
+                    ->orWhere('created_by', $user->id);
+            });
+        }
+
+        $tickets = $query->latest()->paginate(10);
 
         return response()->json($tickets);
     }
@@ -28,8 +51,8 @@ class TicketController extends Controller
     public function store(StoreTicketRequest $request, TicketService $ticketService)
     {
         $ticket = $ticketService->createTicket(
-            $request->validated(), 
-            $request->user()->id, 
+            $request->validated(),
+            $request->user()->id,
             $request->file('attachments')
         );
 
@@ -42,23 +65,57 @@ class TicketController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($ticket_number)
+    /**
+     * Display the specified resource.
+     */
+    public function show(Request $request, $ticket_number)
     {
+        $user = $request->user();
+
         $ticket = Ticket::with([
-            'category', 
-            'priority', 
-            'creator', 
-            'assignedAgent', 
-            'labels', 
-            'attachments', 
-            'comments.user', 
+            'category',
+            'priority',
+            'creator',
+            'assignedAgent',
+            'labels',
+            'attachments',
+            'comments' => function ($q) use ($user) {
+                if ($user && $user->hasRole('customer')) {
+                    $q->where('is_internal', false);
+                }
+            },
+            'comments.user',
             'comments.attachments',
         ])
-        ->where('ticket_number', $ticket_number)
-        ->first();
+            ->where('ticket_number', $ticket_number)
+            ->first();
 
         if (!$ticket) {
             return response()->json(['message' => 'Ticket not found'], 404);
+        }
+
+        $hasAccess = false;
+
+        if ($user->hasRole('administrator')) {
+            $hasAccess = true;
+        } elseif ($user->hasRole('supervisor')) {
+            if ($ticket->created_by === $user->id || ($ticket->assignedAgent && $ticket->assignedAgent->team_id === $user->team_id)) {
+                $hasAccess = true;
+            }
+        } elseif ($user->hasRole('agent')) {
+            if ($ticket->created_by === $user->id || $ticket->assigned_agent_id === $user->id) {
+                $hasAccess = true;
+            }
+        } elseif ($user->hasRole('customer')) {
+            if ($ticket->created_by === $user->id) {
+                $hasAccess = true;
+            }
+        }
+
+        if (!$hasAccess) {
+            return response()->json([
+                'message' => 'Forbidden. You do not have permission to view this ticket.'
+            ], 403);
         }
 
         return response()->json($ticket);
@@ -86,5 +143,5 @@ class TicketController extends Controller
 
         return response()->json(['message' => 'Ticket deleted successfully!']);
     }
-    
+
 }
