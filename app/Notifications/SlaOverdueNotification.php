@@ -44,7 +44,7 @@ class SlaOverdueNotification extends Notification implements ShouldQueue
                     ->greeting('Hello ' . $notifiable->name . ',')
                     ->line('The SLA for Ticket ' . $this->ticket->ticket_number . ' has been breached.')
                     ->line('Priority: ' . strtoupper($this->ticket->priority?->name ?? 'N/A'))
-                    ->action('Take Immediate Action', url('/app/tickets/' . $this->ticket->id))
+                    ->action('Take Immediate Action', url('/app/tickets/' . $this->ticket->ticket_number))
                     ->line('The ticket status has been automatically escalated. - Queue Goblin');
     }
 
