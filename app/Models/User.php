@@ -18,7 +18,7 @@ use Spatie\Activitylog\Support\LogOptions;
 use Laravel\Sanctum\HasApiTokens;
 
 
-#[Fillable(['name', 'email', 'password', 'team_id'])]
+#[Fillable(['name', 'email', 'password', 'team_id', 'google_social_auth_id', 'google_social_auth_type'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
