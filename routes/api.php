@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\TicketActions\ReopenTicketController;
 use App\Http\Controllers\Api\TicketActions\SubmitTicketReplyController;
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/auth/google', [AuthController::class, 'googleLogin']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // Logout

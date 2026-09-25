@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -38,5 +40,50 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Logout successfully.']);
+    }
+
+    public function googleLogin(Request $request)
+    {
+        $request->validate([
+            'token' => 'required|string',
+        ]);
+
+        try {
+            $googleUser = Socialite::driver('google')->stateless()->userFromToken($request->token);
+            
+            $user = User::where('email', $googleUser->email)->first();
+
+            if ($user) {
+                $user->update([
+                    'google_social_auth_id' => $googleUser->id,
+                    'google_social_auth_type' => 'google',
+                    'email_verified_at' => $user->email_verified_at ?? now(),
+                ]);
+            } else {
+                $user = User::create([
+                    'name' => $googleUser->name,
+                    'email' => $googleUser->email,
+                    'password' => Hash::make(Str::random(16)),
+                    'google_social_auth_id' => $googleUser->id,
+                    'google_social_auth_type' => 'google',
+                ]);
+
+                $user->assignRole('customer');
+            }
+
+            $token = $user->createToken('API Token')->plainTextToken;
+
+            return response()->json([
+                'message' => 'Google Login successful',
+                'access_token' => $token,
+                'user' => $user
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to authenticate with Google. Please try again.',
+                'error' => $e->getMessage()
+            ], 401);
+        }
     }
 }
